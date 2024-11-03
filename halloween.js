@@ -42,34 +42,22 @@ const humans = '334';
 
 //EJERCICIO 3
 function findSafestPath(dream) {
-    const memo = {}; // Objeto para almacenar resultados de subproblemas
-
-    function backtrack(x, y) {
+    function backtrack(x, y, currentCost, minCost) {
         // Si llegamos a la esquina inferior derecha
         if (x === dream.length - 1 && y === dream[0].length - 1) {
-            return dream[x][y];
+            return Math.min(currentCost, minCost);
         }
-
-        // Verificar si el resultado ya está memoizado
-        const key = `${x},${y}`;
-        if (key in memo) {
-            return memo[key];
-        }
-
-        let minCost = Infinity;
 
         // Mover hacia la derecha
         if (y + 1 < dream[0].length) {
-            minCost = Math.min(minCost, dream[x][y] + backtrack(x, y + 1));
+            minCost = backtrack(x, y + 1, currentCost + dream[x][y + 1], minCost);
         }
 
         // Mover hacia abajo
         if (x + 1 < dream.length) {
-            minCost = Math.min(minCost, dream[x][y] + backtrack(x + 1, y));
+            minCost = backtrack(x + 1, y, currentCost + dream[x + 1][y], minCost);
         }
 
-        // Almacenar el resultado en memo
-        memo[key] = minCost;
         return minCost;
     }
 
@@ -78,7 +66,7 @@ function findSafestPath(dream) {
     }
 
     // Iniciar el backtracking desde la esquina superior izquierda
-    return backtrack(0, 0);
+    return backtrack(0, 0, dream[0][0], Infinity);
 }
 
 const dream = [
